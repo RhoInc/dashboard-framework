@@ -11,6 +11,25 @@
     }
 
     function addChart(settings, data, row, column) {
+      console.log(settings); //console.table(
+      //    Object.keys(settings)
+      //        .filter(key => !(settings[key] instanceof Object))
+      //        .reduce(
+      //            (acc,cur) => {
+      //                console.log(acc);
+      //                console.log(cur);
+      //                console.log(settings[cur]);
+      //                return acc[cur] = settings[cur];
+      //            },
+      //            {}
+      //        )
+      //);
+      //settings.resizable = true;
+
+      delete settings.width;
+      delete settings.height;
+      settings.scale_text = true; //settings.aspect = 1.5;
+
       this.charts.push({
         settings: settings,
         data: data,
@@ -36,7 +55,9 @@
         console.log(data);
         chart.data = data;
         chart.webcharts.init(data);
-      });else if (Array.isArray(chart.data)) chart.webcharts.init(chart.data);
+        console.log(chart.webcharts.wrap.node().offsetHeight);
+        console.log(chart.container.node().offsetHeight);
+      });else if (Array.isArray(chart.data)) chart.webcharts.init(chart.data);else console.warn('addChart() requires a path to a .csv file or a data array.');
     }
 
     function init() {

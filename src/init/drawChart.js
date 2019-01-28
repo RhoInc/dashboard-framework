@@ -15,8 +15,12 @@ export default function drawChart(chart) {
                 console.log(data);
                 chart.data = data;
                 chart.webcharts.init(data);
+                console.log(chart.webcharts.wrap.node().offsetHeight);
+                console.log(chart.container.node().offsetHeight);
             }
         );
     else if (Array.isArray(chart.data))
         chart.webcharts.init(chart.data);
+    else
+        console.warn('addChart() requires a path to a .csv file or a data array.')
 }

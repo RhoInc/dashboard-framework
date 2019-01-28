@@ -1,0 +1,23 @@
+.dashboard-framework {
+    width: 100%;
+    display: inline-block;
+}
+.df-chart {
+    width: 32%;
+    height: 300px;
+    display: inline-block;
+}
+.df-chart:nth-child(3n-2) {
+    float: left;
+}
+.df-chart:nth-child(3n-1) {
+    margin: 0 2%;
+}
+.df-chart:nth-child(3n) {
+    float: right;
+}
+.df-chart:nth-child(n + 4) {
+    margin-top: 24px;
+}
+.df-chart .wc-chart {
+}
