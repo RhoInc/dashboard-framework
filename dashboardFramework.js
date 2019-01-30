@@ -28,7 +28,6 @@
       delete settings.width;
       delete settings.height;
       settings.scale_text = true;
-      settings.aspect = 1.75;
       this.charts.push({
         settings: settings,
         data: data,
@@ -183,7 +182,6 @@
     function specification() {
       var syncedSettings = configuration.syncSettings(configuration.settings);
       var syncedControlInputs = configuration.syncControlInputs(configuration.controlInputs(), syncedSettings);
-      console.log(callbacks);
       return {
         schema: schema,
         settings: syncedSettings,
@@ -890,65 +888,95 @@
       forms: specification$4()
     };
 
-    function createDashboard(charts) {
+    function addChartList(charts) {
       var _this = this;
 
       charts.forEach(function (chart) {
         if (chart.hasOwnProperty('spec')) {
           var spec = specifications[chart.spec];
-          console.log(spec);
           if (spec !== undefined) _this.addChart(spec.settings, chart.data, spec.schema.title, spec.controlInputs, spec.callbacks);
         } else if (chart.hasOwnProperty('settings')) {
-          _this.addChart(chart.settings, chart.data);
+          chart.title = chart.title || '';
+          chart.controlInputs = chart.controlInputs || [];
+          chart.callbacks = chart.callbacks || {};
+
+          _this.addChart(chart.settings, chart.data, chart.title, chart.controlInputs, chart.callbacks);
         }
       });
     }
 
-    function updateLayout() {
+    function setNumberOfColumns() {
+      this.settings.nCharts = this.charts.length;
+
+      if (this.settings.nColumns === undefined || this.settings.nColumns < 2 || this.settings.nColumns > 4) {
+        if ([2, 4].indexOf(this.settings.nCharts) > -1) this.settings.nColumns = 2;else if (this.settings.nCharts % 4 === 0) this.settings.nColumns = 4;else this.settings.nColumns = 3;
+      }
+
+      this.containers.main.classed("dashboard-framework--".concat(this.settings.nColumns), true);
+    }
+
+    function layoutRows() {
+      this.settings.nRows = Math.ceil(this.settings.nCharts / this.settings.nColumns);
+
+      for (var i = 0; i < this.settings.nRows; i++) {
+        var row = i + 1;
+        this.containers["row".concat(row)] = this.containers.main.append('div').classed("df-row df-row--".concat(row), true);
+      }
+    }
+
+    function layoutCharts() {
       var _this = this;
 
-      this.nCharts = this.charts.length;
       this.charts.forEach(function (chart, i) {
+        var row = Math.ceil((i + 1) / _this.settings.nColumns);
+        var col = (i + 1) % _this.settings.nColumns || _this.settings.nColumns;
         chart.containers = {
-          main: _this.containers.main.append('div').classed("df-chart df-chart--".concat(i), true)
+          main: _this.containers["row".concat(row)].append('div').classed("df-chart df-chart--row".concat(row, " df-chart--col").concat(col, " df-chart--").concat(i), true)
         };
         chart.containers.head = chart.containers.main.append('div').classed('df-chart__head', true);
         chart.containers.body = chart.containers.main.append('div').classed('df-chart__body', true);
       });
     }
 
-    function drawChart(chart) {
-      //Set title.
-      chart.containers.head.text(chart.title); //Define controls.
+    function updateLayout() {
+      setNumberOfColumns.call(this);
+      layoutRows.call(this);
+      layoutCharts.call(this);
+    }
 
-      if (Array.isArray(chart.controlInputs) && chart.controlInputs.length) chart.controls = new webcharts.createControls(chart.containers.head.node(), {
-        inputs: chart.controlInputs
-      }); //Define chart.
+    function drawCharts() {
+      var _this = this;
 
-      chart.webcharts = new webcharts.createChart(chart.containers.body.node(), chart.settings, chart.controls); //Attach callbacks.
+      this.charts.forEach(function (chart) {
+        //Set title.
+        chart.containers.head.text(chart.title); //Define controls.
 
-      if (chart.callbacks) {
-        for (var callback in chart.callbacks) {
-          chart.webcharts.on(callback.substring(2).toLowerCase(), chart.callbacks[callback]);
-        }
-      } //Intialize chart.
+        if (Array.isArray(chart.controlInputs) && chart.controlInputs.length) chart.controls = new webcharts.createControls(chart.containers.head.node(), {
+          inputs: chart.controlInputs
+        }); //Define chart.
+
+        chart.settings.aspect = _this.settings.nColumns === 2 ? 25 / 9 : 16 / 9;
+        chart.webcharts = new webcharts.createChart(chart.containers.body.node(), chart.settings, chart.controls); //Attach callbacks.
+
+        if (chart.callbacks) {
+          for (var callback in chart.callbacks) {
+            chart.webcharts.on(callback.substring(2).toLowerCase(), chart.callbacks[callback]);
+          }
+        } //Intialize chart.
 
 
-      if (typeof chart.data === 'string') d3.csv(chart.data, function (d) {
-        return d;
-      }, function (data) {
-        chart.data = data;
-        chart.webcharts.init(data);
-      });else if (Array.isArray(chart.data)) chart.webcharts.init(chart.data);else console.warn('addChart() requires a path to a .csv file or a data array.');
+        if (typeof chart.data === 'string') d3.csv(chart.data, function (d) {
+          return d;
+        }, function (data) {
+          chart.data = data;
+          chart.webcharts.init(data);
+        });else if (Array.isArray(chart.data)) chart.webcharts.init(chart.data);else console.warn('addChart() requires a path to a .csv file or a data array.');
+      });
     }
 
     function init() {
-      var _this = this;
-
       updateLayout.call(this);
-      this.charts.forEach(function (chart) {
-        drawChart.call(_this, chart);
-      });
+      drawCharts.call(this);
     }
 
     /* Methods
@@ -966,12 +994,10 @@
         element: element,
         settings: settings,
         charts: [],
+        //methods
         addChart: addChart,
-        // exposed method
-        createDashboard: createDashboard,
-        // exposed method
-        init: init // exposed method
-
+        addChartList: addChartList,
+        init: init
       };
       layout.call(dashboardFramework);
       return dashboardFramework;

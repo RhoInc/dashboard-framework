@@ -9,7 +9,7 @@
 
 import layout from './layout';
 import addChart from './addChart';
-import createDashboard from './createDashboard';
+import addChartList from './addChartList';
 import init from './init';
 
 export default function dashboardFramework(element = 'body', settings = {}) {
@@ -17,9 +17,11 @@ export default function dashboardFramework(element = 'body', settings = {}) {
         element,
         settings,
         charts: [],
-        addChart, // exposed method
-        createDashboard, // exposed method
-        init, // exposed method
+
+        //methods
+        addChart,
+        addChartList,
+        init,
     };
     layout.call(dashboardFramework);
     return dashboardFramework;

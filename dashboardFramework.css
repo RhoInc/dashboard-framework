@@ -4,29 +4,73 @@
 }
 
 /*------------------------------------------------------------------------------------------------\
-  Containers
+  Rows, columns, and chart containers
 \------------------------------------------------------------------------------------------------*/
 
-    .df-chart {
-        width: 32%;
-        height: 40vh;
+    .df-row {
+        width: 100%;
         display: inline-block;
     }
-    .df-chart:nth-child(3n-2) {
-        float: left;
-    }
-    .df-chart:nth-child(3n-1) {
-        margin: 0 2%;
-    }
-    .df-chart:nth-child(3n) {
-        float: right;
-    }
-    .df-chart:nth-child(n + 4) {
+    .df-row:nth-child(n+2) {
         margin-top: 24px;
     }
+    .df-chart {
+        display: inline-block;
+    }
+
+    /**-------------------------------------------------------------------------------------------\
+      with two columns
+    \-------------------------------------------------------------------------------------------**/
+
+        .dashboard-framework--2 .df-chart {
+            width: 49%;
+        }
+        .dashboard-framework--2 .df-chart:nth-child(2n-1) {
+            float: left;
+        }
+        .dashboard-framework--2 .df-chart:nth-child(2n) {
+            float: right;
+        }
+
+    /**-------------------------------------------------------------------------------------------\
+      with three columns
+    \-------------------------------------------------------------------------------------------**/
+
+        .dashboard-framework--3 .df-chart {
+            width: 32%;
+        }
+        .dashboard-framework--3 .df-chart:nth-child(3n-2) {
+            float: left;
+        }
+        .dashboard-framework--3 .df-chart:nth-child(3n-1) {
+            margin: 0 2%;
+        }
+        .dashboard-framework--3 .df-chart:nth-child(3n) {
+            float: right;
+        }
+
+    /**-------------------------------------------------------------------------------------------\
+      with four columns
+    \-------------------------------------------------------------------------------------------**/
+
+        .dashboard-framework--4 .df-chart {
+            width: 24%;
+        }
+        .dashboard-framework--4 .df-chart:nth-child(4n-3) {
+            float: left;
+        }
+        .dashboard-framework--4 .df-chart:nth-child(4n-2) {
+            margin: 0 1%;
+        }
+        .dashboard-framework--4 .df-chart:nth-child(4n-1) {
+            margin: 0 1%;
+        }
+        .dashboard-framework--4 .df-chart:nth-child(4n) {
+            float: right;
+        }
 
 /*------------------------------------------------------------------------------------------------\
-  Title and controls
+  Chart title and controls
 \------------------------------------------------------------------------------------------------*/
 
     .df-chart__head {

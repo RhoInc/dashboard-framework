@@ -17,7 +17,6 @@ export default function addChart(settings, data, title, controlInputs, callbacks
     delete settings.width;
     delete settings.height;
     settings.scale_text = true;
-    settings.aspect = 1.75;
     this.charts.push({
         settings,
         data,
