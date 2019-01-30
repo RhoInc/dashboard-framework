@@ -1,10 +1,30 @@
-import { createChart } from 'webcharts';
+import { createControls, createChart } from 'webcharts';
 
 export default function drawChart(chart) {
+    //Set title.
+    chart.containers.head.text(chart.title);
+
+    //Define controls.
+    if (Array.isArray(chart.controlInputs) && chart.controlInputs.length)
+        chart.controls = new createControls(
+            chart.containers.head.node(),
+            {inputs: chart.controlInputs}
+        );
+
+    //Define chart.
     chart.webcharts = new createChart(
-        chart.container.node(),
+        chart.containers.body.node(),
         chart.settings,
+        chart.controls
     );
+
+    //Attach callbacks.
+    if (chart.callbacks) {
+        for (const callback in chart.callbacks)
+            chart.webcharts.on(callback.substring(2).toLowerCase(), chart.callbacks[callback]);
+    }
+
+    //Intialize chart.
     if (typeof chart.data === 'string')
         d3.csv(
             chart.data,
@@ -12,11 +32,8 @@ export default function drawChart(chart) {
                 return d;
             },
             data => {
-                console.log(data);
                 chart.data = data;
                 chart.webcharts.init(data);
-                console.log(chart.webcharts.wrap.node().offsetHeight);
-                console.log(chart.container.node().offsetHeight);
             }
         );
     else if (Array.isArray(chart.data))

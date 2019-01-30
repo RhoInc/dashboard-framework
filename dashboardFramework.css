@@ -2,22 +2,67 @@
     width: 100%;
     display: inline-block;
 }
-.df-chart {
-    width: 32%;
-    height: 300px;
-    display: inline-block;
-}
-.df-chart:nth-child(3n-2) {
-    float: left;
-}
-.df-chart:nth-child(3n-1) {
-    margin: 0 2%;
-}
-.df-chart:nth-child(3n) {
-    float: right;
-}
-.df-chart:nth-child(n + 4) {
-    margin-top: 24px;
-}
-.df-chart .wc-chart {
-}
+
+/*------------------------------------------------------------------------------------------------\
+  Containers
+\------------------------------------------------------------------------------------------------*/
+
+    .df-chart {
+        width: 32%;
+        height: 40vh;
+        display: inline-block;
+    }
+    .df-chart:nth-child(3n-2) {
+        float: left;
+    }
+    .df-chart:nth-child(3n-1) {
+        margin: 0 2%;
+    }
+    .df-chart:nth-child(3n) {
+        float: right;
+    }
+    .df-chart:nth-child(n + 4) {
+        margin-top: 24px;
+    }
+
+/*------------------------------------------------------------------------------------------------\
+  Title and controls
+\------------------------------------------------------------------------------------------------*/
+
+    .df-chart__head {
+        font-size: 24px;
+        font-weight: lighter;
+        border-bottom: 1px solid #aaa;
+        display: inline-block;
+        width: 100%;
+        height: 36px;
+        margin-bottom: 6px;
+    }
+    .df-chart__head .wc-controls {
+        display: inline-block;
+        float: right;
+        font-size: 16px;
+    }
+    .df-chart__head .control-group {
+        display: inline-block;
+    }
+    .df-chart__head .control-group > * {
+        display: inline-block !important;
+    }
+    .df-chart__head .control-group .wc-control-label {
+        margin-right: 5px;
+    }
+
+/*------------------------------------------------------------------------------------------------\
+  Chart
+\------------------------------------------------------------------------------------------------*/
+
+    .df-chart__body {
+    }
+    .df-chart__body .wc-chart {
+    }
+    .df-chart__body .legend {
+        float: right;
+        display: inline-block !important;
+        width: auto;
+    }

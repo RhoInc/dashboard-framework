@@ -1,5 +1,4 @@
-export default function addChart(settings, data, row, column) {
-    console.log(settings);
+export default function addChart(settings, data, title, controlInputs, callbacks, row, col) {
     //console.table(
     //    Object.keys(settings)
     //        .filter(key => !(settings[key] instanceof Object))
@@ -14,15 +13,18 @@ export default function addChart(settings, data, row, column) {
     //            {}
     //        )
     //);
-    //settings.resizable = true;
+    settings.resizable = false;
     delete settings.width;
     delete settings.height;
     settings.scale_text = true;
-    //settings.aspect = 1.5;
+    settings.aspect = 1.75;
     this.charts.push({
         settings,
         data,
+        title,
+        controlInputs,
+        callbacks,
         row,
-        column
+        col
     });
 }

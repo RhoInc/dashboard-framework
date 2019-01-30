@@ -1,0 +1,159 @@
+#main, #top{
+  max-width: 2000px;
+  margin-left: 10px;
+}
+#main > .summary{
+  max-width: 100%;
+}
+.gg-dashboard{
+  width: 2000px;
+  /*height: 768px;*/
+  font-size: 12px;
+}
+.gg-dashboard .tab-content > .tab-pane{
+  margin-top: 10px;
+}
+.gg-dashboard .gg-dash-item{
+  float: left;
+  width: 500px;
+  /*height: 280px;*/
+  margin: 0 30px 30px 0;
+}
+.gg-dashboard .gg-dash-item.left{
+  clear: left;
+}
+.gg-dashboard .gg-dash-item.right{
+  /*float: right;*/
+  margin-right: 0;
+}
+.gg-dashboard .gg-dash-item.right.double-height{
+  float: right;
+}
+.gg-dashboard .gg-dash-item.double-wide{
+  width: 1000px;
+}
+.gg-dashboard .gg-dash-item.triple-wide{
+  width: 100%;
+}
+.gg-dashboard .gg-dash-item.full-height{
+  height: 100%;
+}
+.gg-dashboard .gg-dash-item > .gg-dash-item-title{
+  position: relative;
+  z-index: 1;
+  text-align: left;
+  font-weight: bold;
+  font-size: 1.5em;
+  margin:0;
+  margin-bottom: .5em;
+}
+.gg-dashboard .gg-dash-item > .gg-dash-item-title > a.link-out{
+  position: absolute;
+  font-size: 11px;
+  margin: 0 5px;
+}
+.gg-dashboard .gg-dash-item > .gg-dash-item-title .wc-controls{
+  font-size: 12px;
+  font-weight: normal;
+  float: right;
+}
+.gg-dashboard .gg-dash-item  .wc-controls{
+  margin: 0;
+}
+.gg-dashboard .gg-dash-item .wc-controls .control-group{
+  margin: 0;
+  display: inline-block;
+}
+.gg-dashboard .gg-dash-item .wc-controls .control-group:not(:last-of-type){
+  margin: 0 10px 0 0;
+}
+.gg-dashboard .gg-dash-item .wc-controls .control-group select{
+  /*max-width: 70px;*/
+}
+.gg-dashboard .gg-dash-item .wc-controls .control-group > *{
+  display: inline-block;
+  margin: 0 3px 0 0;
+}
+.gg-dashboard .gg-dash-item .wc-controls .control-group > *:not(input):empty{
+  display: none;
+}
+.gg-dashboard .gg-dash-item .wc-controls .control-group > label.radio:not(:last-of-type){
+  margin-right: .5em;
+}
+.gg-dashboard .gg-dash-item .wc-controls .control-label{
+  display: inline;
+  margin-right: .5em;
+}
+.gg-dashboard .gg-dash-item .wc-controls .changer{
+  display: inline;
+  max-width: 100px;
+}
+
+.gg-dashboard .gg-dash-item > .gg-dash-item-title .wc-thisControls{
+  font-size: 12px;
+  font-weight: normal;
+  float: right;
+}
+.gg-dashboard .gg-dash-item  .wc-thisControls{
+  margin: 0;
+}
+.gg-dashboard .gg-dash-item .wc-thisControls .control-group{
+  margin: 0;
+  display: inline-block;
+}
+.gg-dashboard .gg-dash-item .wc-thisControls .control-group:not(:last-of-type){
+  margin: 0 10px 0 0;
+}
+.gg-dashboard .gg-dash-item .wc-thisControls .control-group select{
+  /*max-width: 70px;*/
+}
+.gg-dashboard .gg-dash-item .wc-thisControls .control-group > *{
+  display: inline-block;
+  margin: 0 3px 0 0;
+}
+.gg-dashboard .gg-dash-item .wc-thisControls .control-group > *:not(input):empty{
+  display: none;
+}
+.gg-dashboard .gg-dash-item .wc-thisControls .control-group > label.radio:not(:last-of-type){
+  margin-right: .5em;
+}
+.gg-dashboard .gg-dash-item .wc-thisControls .control-label{
+  display: inline;
+  margin-right: .5em;
+}
+.gg-dashboard .gg-dash-item .wc-thisControls .changer{
+  display: inline;
+  max-width: 100px;
+}
+
+.gg-dashboard .gg-dash-item .wc-chart .legend{
+  text-align: right;
+}
+.gg-dashboard .gg-dash-item table{
+  width: 100%;
+}
+.gg-dashboard .gg-dash-item table tr{
+  border-bottom: 1px solid #eee;
+}
+.gg-dashboard .gg-dash-item table td,
+.gg-dashboard .gg-dash-item table th{
+  padding: 2px;
+}
+.gg-dashboard .gg-dash-item table th{
+  text-align: left;
+}
+.gg-dashboard .gg-dash-item table th.title{
+  background: #eee;
+  text-align: center;
+}
+
+.gg-dashboard .hidden{
+  display:none;
+}
+
+/*footnote*/
+.gg-dashboard .footnote{
+  font-size:8pt;
+  display:block;
+  font-style:italic;
+}
