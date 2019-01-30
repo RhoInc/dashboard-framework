@@ -1,7 +1,11 @@
+import enforceChartSizing from './drawCharts/enforceChartSizing';
 import { createControls, createChart } from 'webcharts';
 
 export default function drawCharts() {
     this.charts.forEach(chart => {
+        //Enforce chart sizing.
+        enforceChartSizing.call(this, chart);
+
         //Set title.
         chart.containers.head.text(chart.title);
 
@@ -13,9 +17,6 @@ export default function drawCharts() {
             );
 
         //Define chart.
-        chart.settings.aspect = this.settings.nColumns === 2
-            ? 25/9
-            : 16/9;
         chart.webcharts = new createChart(
             chart.containers.body.node(),
             chart.settings,

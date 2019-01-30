@@ -3,6 +3,14 @@ const dashboard = dashboardFramework('#container');
 //Pass an array of data specification identifiers and data paths/arrays.
 dashboard.addChartList([
     {
+        spec: 'enrollment',
+        data: '../../dashboard-charts/data/enrollment.csv'
+    },
+    {
+        spec: 'visitCompletion',
+        data: '../../dashboard-charts/data/visitCompletion.csv'
+    },
+    {
         spec: 'queries',
         data: '../../dashboard-charts/data/queries.csv'
     },
