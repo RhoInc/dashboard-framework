@@ -1,6 +1,8 @@
-import specifications from '../../dashboard-charts/src/specifications';
+//import specifications from '../../dashboard-charts/src/specifications';
+import { specifications } from 'dashboard-charts';
 
 export default function addChartList(charts) {
+    console.log(specifications);
     charts.forEach(chart => {
         if (chart.hasOwnProperty('spec')) {
             const spec = specifications[chart.spec];
