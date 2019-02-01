@@ -1,7 +1,12 @@
+import './util/polyfills';
+import clone from './util/clone';
+
 /* Methods
     * dashboardFramework(element, settings)
         * layout()
-        * addChart(settings, data, row, column)
+        * addChart(specification)
+            * or
+        * addChartList([{specification, data},...])
         * init()
         * updateLayout()
         * drawChart(chart)
@@ -22,6 +27,7 @@ export default function dashboardFramework(element = 'body', settings = {}) {
         addChart,
         addChartList,
         init,
+        clone, // avoid altering chart specifications
     };
     layout.call(dashboardFramework);
     return dashboardFramework;
