@@ -1,12 +1,12 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('d3'), require('dashboard-charts'), require('webcharts')) :
-    typeof define === 'function' && define.amd ? define(['d3', 'dashboard-charts', 'webcharts'], factory) :
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('d3'), require('dashboardCharts'), require('webcharts')) :
+    typeof define === 'function' && define.amd ? define(['d3', 'dashboardCharts', 'webcharts'], factory) :
     (global = global || self, global.dashboardFramework = factory(global.d3, global.dashboardCharts, global.webCharts));
-}(this, function (d3$1, dashboardCharts, webcharts) { 'use strict';
+}(this, function (d3, dashboardCharts$1, webcharts) { 'use strict';
 
     function layout() {
       this.containers = {
-        main: d3$1.select(this.element).append('div').datum(this).classed('dashboard-framework', true).attr('id', "dashboard-framework".concat(d3$1.selectAll('.dashboard-framework').size() + 1))
+        main: d3.select(this.element).append('div').datum(this).classed('dashboard-framework', true).attr('id', "dashboard-framework".concat(d3.selectAll('.dashboard-framework').size() + 1))
       };
     }
 
@@ -27,17 +27,18 @@
       });
     }
 
-    //import specifications from '../../dashboard-charts/src/specifications';
     function addChartList(charts) {
       var _this = this;
 
-      console.log(dashboardCharts.specifications);
       charts.forEach(function (chart) {
-        if (chart.hasOwnProperty('spec')) {
-          var spec = dashboardCharts.specifications[chart.spec];
-          if (spec !== undefined) _this.addChart(spec.settings, chart.data, spec.schema.title, spec.controlInputs, spec.callbacks);
+        if (dashboardCharts !== undefined && chart.hasOwnProperty('spec') && dashboardCharts$1.specifications[chart.spec] !== undefined) {
+          var spec = dashboardCharts$1.specifications[chart.spec];
+
+          _this.addChart(spec.settings, chart.data, spec.schema.title, spec.controlInputs, spec.callbacks);
         } else if (chart.hasOwnProperty('settings')) {
           _this.addChart(chart.settings, chart.data, chart.title || '', chart.controlInputs || [], chart.callbacks || {});
+        } else {
+          console.warn('To render a chart provide settings and data.');
         }
       });
     }

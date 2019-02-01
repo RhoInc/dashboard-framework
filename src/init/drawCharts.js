@@ -1,5 +1,6 @@
 import enforceChartSizing from './drawCharts/enforceChartSizing';
 import { createControls, createChart } from 'webcharts';
+import { csv } from 'd3';
 
 export default function drawCharts() {
     this.charts.forEach(chart => {
@@ -31,7 +32,7 @@ export default function drawCharts() {
 
         //Intialize chart.
         if (typeof chart.data === 'string')
-            d3.csv(
+            csv(
                 chart.data,
                 d => {
                     return d;

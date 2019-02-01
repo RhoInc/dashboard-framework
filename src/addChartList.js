@@ -1,13 +1,10 @@
-//import specifications from '../../dashboard-charts/src/specifications';
-import { specifications } from 'dashboard-charts';
+import { specifications } from 'dashboardCharts';
 
 export default function addChartList(charts) {
-    console.log(specifications);
     charts.forEach(chart => {
-        if (chart.hasOwnProperty('spec')) {
+        if (dashboardCharts !== undefined && chart.hasOwnProperty('spec') && specifications[chart.spec] !== undefined) {
             const spec = specifications[chart.spec];
-            if (spec !== undefined)
-                this.addChart(spec.settings, chart.data, spec.schema.title, spec.controlInputs, spec.callbacks);
+            this.addChart(spec.settings, chart.data, spec.schema.title, spec.controlInputs, spec.callbacks);
         } else if (chart.hasOwnProperty('settings')) {
             this.addChart(
                 chart.settings,
@@ -16,6 +13,8 @@ export default function addChartList(charts) {
                 chart.controlInputs || [],
                 chart.callbacks || {},
             );
+        } else {
+            console.warn('To render a chart provide settings and data.');
         }
     });
 }
