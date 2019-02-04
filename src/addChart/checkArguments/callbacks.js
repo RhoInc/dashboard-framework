@@ -20,5 +20,12 @@ export default function callbacks(specification) {
                 console.warn(`Valid [ callbacks ] include ${validProperties.toString().replace(/,/g, ', ').replace('onDestroy', 'and onDestroy')}. Removing \`${key}\`.`);
             return validProperty;
         })
-        .map(key => specification.callbacks[key]);
+        .reduce(
+            (acc,cur) => {
+                acc[cur] = specification.callbacks[cur];
+
+                return acc;
+            },
+            {}
+        );
 }

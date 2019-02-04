@@ -256,9 +256,10 @@
         var validProperty = validProperties.indexOf(key) > -1;
         if (!validProperty) console.warn("Valid [ callbacks ] include ".concat(validProperties.toString().replace(/,/g, ', ').replace('onDestroy', 'and onDestroy'), ". Removing `").concat(key, "`."));
         return validProperty;
-      }).map(function (key) {
-        return specification.callbacks[key];
-      });
+      }).reduce(function (acc, cur) {
+        acc[cur] = specification.callbacks[cur];
+        return acc;
+      }, {});
     }
 
     function row(specification) {
