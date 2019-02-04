@@ -339,6 +339,93 @@
 
     function checkArguments$1() {}
 
+    function isNonNullObject(value) {
+      return !!value && _typeof(value) === 'object';
+    }
+
+    function isSpecial(value) {
+      var stringValue = Object.prototype.toString.call(value);
+      return stringValue === '[object RegExp]' || stringValue === '[object Date]';
+    }
+
+    function defaultIsMergeableObject(value) {
+      return isNonNullObject(value) && !isSpecial(value);
+    }
+
+    function emptyTarget(val) {
+      return Array.isArray(val) ? [] : {};
+    }
+
+    function cloneUnlessOtherwiseSpecified(value, options) {
+      return options.clone !== false && options.isMergeableObject(value) ? deepmerge(emptyTarget(value), value, options) : value;
+    }
+
+    var clone$1 = function clone(value, options) {
+      return deepmerge(emptyTarget(value), value, options);
+    };
+
+    function combineMerge(target, source, options) {
+      var destination = target.slice();
+      source.forEach(function (e, i) {
+        if (typeof destination[i] === 'undefined') {
+          var cloneRequested = options.clone !== false;
+          var shouldClone = cloneRequested && options.isMergeableObject(e);
+          destination[i] = shouldClone ? clone$1(e, options) : e;
+        } else if (options.isMergeableObject(e)) {
+          destination[i] = deepmerge(target[i], e, options);
+        } else if (target.indexOf(e) === -1) {
+          destination.push(e);
+        }
+      });
+      return destination;
+    }
+
+    function mergeObject(target, source, options) {
+      var destination = {};
+
+      if (options.isMergeableObject(target)) {
+        Object.keys(target).forEach(function (key) {
+          destination[key] = cloneUnlessOtherwiseSpecified(target[key], options);
+        });
+      }
+
+      Object.keys(source).forEach(function (key) {
+        if (!options.isMergeableObject(source[key]) || !target[key]) {
+          destination[key] = cloneUnlessOtherwiseSpecified(source[key], options);
+        } else {
+          destination[key] = deepmerge(target[key], source[key], options);
+        }
+      });
+      return destination;
+    }
+
+    function deepmerge(target, source, options) {
+      options = options || {};
+      options.arrayMerge = options.arrayMerge || combineMerge;
+      options.isMergeableObject = options.isMergeableObject || defaultIsMergeableObject;
+      var sourceIsArray = Array.isArray(source);
+      var targetIsArray = Array.isArray(target);
+      var sourceAndTargetTypesMatch = sourceIsArray === targetIsArray;
+
+      if (!sourceAndTargetTypesMatch) {
+        return cloneUnlessOtherwiseSpecified(source, options);
+      } else if (sourceIsArray) {
+        return options.arrayMerge(target, source, options);
+      } else {
+        return mergeObject(target, source, options);
+      }
+    }
+
+    deepmerge.all = function deepmergeAll(array, options) {
+      if (!Array.isArray(array)) {
+        throw new Error('first argument should be an array');
+      }
+
+      return array.reduce(function (prev, next) {
+        return deepmerge(prev, next, options);
+      }, {});
+    };
+
     function addChartList(charts) {
       var _this = this;
 
@@ -349,6 +436,11 @@
 
           specification.data = chart.data;
           specification.title = specification.schema.title;
+          if (chart.settings) specification.settings = deepmerge(specification.settings, chart.settings);
+          if (chart.controlInputs) specification.controlInputs = chart.controlInputs;
+          if (chart.callbacks) for (var callback in chart.callbacks) {
+            specification.callbacks[callback] = chart.callbacks[callback];
+          }
 
           _this.addChart(specification);
         } else if (chart.hasOwnProperty('specification')) {
@@ -399,10 +491,11 @@
     }
 
     function enforceChartSizing(chart) {
+      chart.settings.resizable = false;
       delete chart.settings.width;
       delete chart.settings.height;
+      delete chart.settings.range_band;
       chart.settings.aspect = this.settings.nColumns === 2 ? 25 / 9 : 16 / 9;
-      chart.settings.resizable = false;
       chart.settings.scale_text = true;
     }
 

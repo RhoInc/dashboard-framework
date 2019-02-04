@@ -4,7 +4,8 @@ const dashboard = dashboardFramework('#container');
 dashboard.addChartList([
     {
         identifier: 'enrollment',
-        data: '../../dashboard-charts/data/enrollment.csv'
+        data: '../../dashboard-charts/data/enrollment.csv',
+        callbacks: {onLayout: function() { console.log(this.raw_data); }},
     },
     {
         identifier: 'visitCompletion',
@@ -12,26 +13,31 @@ dashboard.addChartList([
     },
     {
         identifier: 'queries',
-        data: '../../dashboard-charts/data/queries.csv'
+        data: '../../dashboard-charts/data/queries.csv',
+        settings: {marks: [{summarizeY: 'count'}]},
     },
     {
         identifier: 'enrollmentOverTime',
-        data: '../../dashboard-charts/data/enrollmentOverTime.csv'
+        data: '../../dashboard-charts/data/enrollmentOverTime.csv',
+        controlInputs: [{type: 'subsetter', label: 'Population', value_col: 'population'}],
     },
     {
         identifier: 'forms',
-        data: '../../dashboard-charts/data/forms.csv'
+        data: '../../dashboard-charts/data/forms.csv',
+        settings: {marks: [{arrange: 'grouped'}]},
     },
 ]);
 
 //Add an additional chart.
 dashboard.addChart({
+    identifier: 'medicalSigns',
     settings: medicalSignsSettings, // settings
     data: '../../data-library/data/clinical-trials/renderer-specific/adbds.csv', // data path
     title: 'Lab Results',
     controlInputs: [
         {
             type: 'subsetter',
+            label: '',
             value_col: 'TEST',
             start: 'Albumin',
         },
