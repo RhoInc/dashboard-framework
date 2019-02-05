@@ -10,7 +10,7 @@ const visits = [
 ];
 const medicalSignsSettings = {
     "x": {
-        "column": "VISIT",
+        "column": "VISIt",
         "type": "ordinal",
         "behavior": "raw",
         "label": "",

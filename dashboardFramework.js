@@ -2,7 +2,7 @@
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('d3'), require('dashboardCharts'), require('webcharts')) :
     typeof define === 'function' && define.amd ? define(['d3', 'dashboardCharts', 'webcharts'], factory) :
     (global = global || self, global.dashboardFramework = factory(global.d3, global.dashboardCharts, global.webCharts));
-}(this, function (d3, dashboardCharts$1, webcharts) { 'use strict';
+}(this, function (d3$1, dashboardCharts$1, webcharts) { 'use strict';
 
     if (typeof Object.assign != 'function') {
       Object.defineProperty(Object, 'assign', {
@@ -170,9 +170,26 @@
       throw new Error('Unable to copy [obj]! Its type is not supported.');
     }
 
+    function stringAccessor(object, option, value) {
+      var a = option.replace(/\[(\w+)\]/g, '.$1').replace(/^\./, '').split('.');
+
+      for (var i = 0, n = a.length; i < n; ++i) {
+        var k = a[i];
+
+        if (k in object) {
+          if (i == n - 1 && value !== undefined) object[k] = value;
+          object = object[k];
+        } else {
+          return;
+        }
+      }
+
+      return object;
+    }
+
     function layout() {
       this.containers = {
-        main: d3.select(this.element).append('div').datum(this).classed('dashboard-framework', true).attr('id', "dashboard-framework".concat(d3.selectAll('.dashboard-framework').size() + 1))
+        main: d3$1.select(this.element).append('div').datum(this).classed('dashboard-framework', true).attr('id', "dashboard-framework".concat(d3$1.selectAll('.dashboard-framework').size() + 1))
       };
     }
 
@@ -192,7 +209,7 @@
       }
     }
 
-    function data(specification) {
+    function data$1(specification) {
       //data - exists
       if (!specification.hasOwnProperty('data')) {
         console.warn('Chart specification requires a [ data ] property.');
@@ -314,7 +331,7 @@
         return specification;
       }
 
-      data(specification);
+      data$1(specification);
 
       if (specification.continue === false) {
         console.log("Chart ".concat(specification.index, " DOES NOT check out."));
@@ -434,6 +451,7 @@
         if (dashboardCharts !== undefined && chart.hasOwnProperty('identifier') && dashboardCharts$1.specifications[chart.identifier] !== undefined) {
           var specification = _this.clone(dashboardCharts$1.specifications[chart.identifier]);
 
+          specification.identifier = chart.identifier;
           specification.data = chart.data;
           specification.title = specification.schema.title;
           if (chart.settings) specification.settings = deepmerge(specification.settings, chart.settings);
@@ -490,6 +508,33 @@
       layoutCharts.call(this);
     }
 
+    function setTitle(chart) {
+      chart.containers.title = chart.containers.head.append('span').classed('df-chart-title', true).text(chart.title);
+      chart.containers.settingsToggle = chart.containers.title.append('span').classed('df-settings-toggle df-hidden', true).html(' &#x2699;').attr('title', 'View chart settings.');
+      chart.containers.title.on('mouseover', function () {
+        chart.containers.settingsToggle.classed('df-hidden', false);
+      }).on('mouseout', function () {
+        chart.containers.settingsToggle.classed('df-hidden', true);
+      });
+      chart.containers.settingsToggle.on('click', function () {
+        if (chart.containers.dataCheck.classed('df-hidden')) {
+          chart.containers.dataCheck.classed('df-hidden', false);
+          chart.webcharts.wrap.classed('df-hidden', true);
+          chart.containers.settingsToggle.attr('title', 'View chart.');
+        } else {
+          chart.containers.dataCheck.classed('df-hidden', true);
+          chart.webcharts.wrap.classed('df-hidden', false);
+          chart.containers.settingsToggle.attr('title', 'View chart settings.');
+        }
+      });
+    }
+
+    function callCreateControls(chart) {
+      if (Array.isArray(chart.controlInputs) && chart.controlInputs.length) chart.controls = new webcharts.createControls(chart.containers.head.node(), {
+        inputs: chart.controlInputs
+      });
+    }
+
     function enforceChartSizing(chart) {
       chart.settings.resizable = false;
       delete chart.settings.width;
@@ -499,34 +544,223 @@
       chart.settings.scale_text = true;
     }
 
+    function callCreateChart(chart) {
+      chart.webcharts = new webcharts.createChart(chart.containers.body.node(), chart.settings, chart.controls);
+    }
+
+    function attachCallbacks(chart) {
+      if (chart.callbacks) {
+        for (var callback in chart.callbacks) {
+          chart.webcharts.on(callback.substring(2).toLowerCase(), chart.callbacks[callback]);
+        }
+      }
+    }
+
+    function withSchema(chart) {
+      chart.variables.schema = Object.keys(chart.schema.properties).map(function (key) {
+        var property = chart.schema.properties[key];
+        property.key = key;
+        property.current = chart.settings[property.key];
+        property.missing = chart.variables.actual.indexOf(property.default) < 0;
+        return property;
+      }).filter(function (property) {
+        return property['data-mapping'] === true;
+      });
+      chart.variables.required = chart.variables.schema.filter(function (property) {
+        return property.required === true;
+      });
+      chart.variables.missing = chart.variables.schema.filter(function (variable) {
+        return variable.missing;
+      });
+    }
+
+    function withoutSchema(chart) {
+      var schema = []; //x.column
+
+      if (chart.webcharts.config.x && chart.webcharts.config.x.column) schema.push({
+        key: 'x.column',
+        title: 'X-axis',
+        current: chart.webcharts.config.x.column
+      }); //y.column
+
+      if (chart.webcharts.config.y && chart.webcharts.config.y.column) schema.push({
+        key: 'y.column',
+        title: 'Y-axis',
+        current: chart.webcharts.config.y.column
+      }); //color_by
+
+      if (chart.webcharts.config.color_by) schema.push({
+        key: 'color_by',
+        title: 'Color Stratification',
+        current: chart.webcharts.config.color_by
+      }); //marks
+
+      if (chart.webcharts.config.marks) chart.webcharts.config.marks.forEach(function (mark, i) {
+        //per
+        if (mark.per && mark.per.length) mark.per.forEach(function (variable, j) {
+          schema.push({
+            key: 'marks[' + i + '].per[' + j + ']',
+            title: "Mark ".concat(i, " (").concat(mark.type, "), key ").concat(j),
+            current: variable
+          });
+        }); //split
+
+        if (mark.split) schema.push({
+          key: 'marks[' + i + '].split',
+          title: "Mark ".concat(i, " (").concat(mark.type, ") arrangement"),
+          current: mark.split
+        }); //values
+
+        if (mark.values) {
+          for (var value in mark.values) {
+            schema.push({
+              key: 'marks[' + i + "].values['" + value + "']",
+              title: "Mark ".concat(i, " (").concat(mark.type, "), ").concat(value, " subset"),
+              current: value
+            });
+          }
+        }
+      });
+      schema.forEach(function (variable) {
+        variable['data-mapping'] = true;
+        variable.required = true;
+        variable.missing = chart.variables.actual.indexOf(variable.current) < 0;
+      });
+      chart.variables.schema = schema;
+      chart.variables.missing = chart.variables.schema.filter(function (variable) {
+        return variable.missing;
+      });
+    }
+
+    function checkRequiredVariables(chart) {
+      chart.variables = {
+        actual: Object.keys(chart.data[0]),
+        required: [],
+        missing: []
+      };
+      if (chart.schema !== undefined) withSchema.call(this, chart);else withoutSchema.call(this, chart);
+    }
+
+    function addContainer(chart) {
+      chart.containers.dataCheck = chart.containers.body.append('div').classed('df-data-check', true);
+    }
+
+    function addWarning(chart) {
+      chart.containers.warning = chart.containers.dataCheck.append('strong').classed('df-data-check__warning', true).text("".concat(chart.variables.missing.length, " variable").concat(chart.variables.missing.length === 1 ? '' : 's', " missing:"));
+    }
+
+    function addSchema(chart) {
+      var context = this;
+      chart.containers.schema = chart.containers.dataCheck.selectAll('div.df-data-check__variable-select').data(chart.variables.schema).enter().append('div').classed('df-data-check__variable-select', true).classed('df-data-check__variable-select--missing', function (d) {
+        return chart.variables.missing.map(function (variable) {
+          return variable.key;
+        }).indexOf(d.key) > -1;
+      }).each(function (d) {
+        var variableSelect = d3.select(this);
+        variableSelect.append('div').classed('df-data-check__variable-select__title', true).html("".concat(d.title).concat(d.required ? ' (<strong>required</strong>)' : ''));
+        variableSelect.append('div').classed('df-data-check__variable-select__action', true).html("Choose another variable:");
+        variableSelect.append('div').classed('df-data-check__variable-select__current', true).html("Currently: <em>".concat(d.current, "<em>"));
+        if (d.missing) chart.settings[d.key] = null;
+        var dropdown = variableSelect.append('select').classed('df-data-check__variable-select__dropdown', true);
+        dropdown.selectAll('option').data(['None selected'].concat(chart.variables.actual)).enter().append('option').text(function (di) {
+          return di;
+        }).property('selected', function (di) {
+          return d.current === di;
+        });
+        dropdown.on('change', function (dii) {
+          var option = dropdown.selectAll('option:checked').text();
+
+          if (option !== 'None selected') {
+            variableSelect.classed('df-data-check__variable-select--missing', false);
+            chart.variables.schema.find(function (variable) {
+              return variable.key === d.key;
+            }).missing = false;
+
+            if (chart.configuration) {
+              chart.settings[d.key] = option;
+              chart.settings = chart.configuration.syncSettings(chart.settings);
+            } else {
+              console.log(d.key);
+              context.stringAccessor(chart.settings, d.key, option);
+            }
+
+            chart.webcharts.config = chart.settings;
+          } else {
+            variableSelect.classed('df-data-check__variable-select--missing', true);
+          }
+
+          if (chart.variables.schema.every(function (variable) {
+            return !(variable.required && variable.missing);
+          })) chart.containers.submit.property('disabled', false);
+        });
+      });
+    }
+
+    function addSubmit(chart) {
+      chart.containers.submit = chart.containers.dataCheck.append('button').classed('df-data-check__submit', true).text('View chart').property('disabled', true).on('click', function () {
+        if (!chart.initialized) {
+          chart.webcharts.init(chart.data);
+          chart.initialized = true;
+        } else {
+          chart.webcharts.wrap.classed('df-hidden', false);
+          chart.webcharts.draw();
+        }
+
+        chart.containers.dataCheck.classed('df-hidden', true);
+      });
+    }
+
+    function layout$1(chart) {
+      addContainer.call(this, chart);
+      addWarning.call(this, chart);
+      addSchema.call(this, chart);
+      addSubmit.call(this, chart);
+    }
+
+    function addVariableSelect(chart) {
+      layout$1.call(this, chart);
+    }
+
+    function initializeChart(chart) {
+      var _this = this;
+
+      //Intialize chart.
+      if (typeof chart.data === 'string') {
+        d3$1.csv(chart.data, function (d) {
+          return d;
+        }, function (data) {
+          chart.data = data;
+          checkRequiredVariables.call(_this, chart);
+          addVariableSelect.call(_this, chart);
+
+          if (chart.variables.missing.length === 0) {
+            chart.containers.dataCheck.classed('df-hidden', true);
+            chart.webcharts.init(data);
+            chart.initialized = true;
+          }
+        });
+      } else if (Array.isArray(chart.data)) {
+        checkRequiredVariables.call(this, chart);
+        addVariableSelect.call(this, chart);
+
+        if (chart.variables.missing.length === 0) {
+          chart.containers.dataCheck.classed('df-hidden', true);
+          chart.webcharts.init(data);
+          chart.initialized = true;
+        }
+      } else console.warn('addChart() requires a path to a .csv file or a data array.');
+    }
+
     function drawCharts() {
       var _this = this;
 
       this.charts.forEach(function (chart) {
-        //Enforce chart sizing.
-        enforceChartSizing.call(_this, chart); //Set title.
-
-        chart.containers.head.text(chart.title); //Define controls.
-
-        if (Array.isArray(chart.controlInputs) && chart.controlInputs.length) chart.controls = new webcharts.createControls(chart.containers.head.node(), {
-          inputs: chart.controlInputs
-        }); //Define chart.
-
-        chart.webcharts = new webcharts.createChart(chart.containers.body.node(), chart.settings, chart.controls); //Attach callbacks.
-
-        if (chart.callbacks) {
-          for (var callback in chart.callbacks) {
-            chart.webcharts.on(callback.substring(2).toLowerCase(), chart.callbacks[callback]);
-          }
-        } //Intialize chart.
-
-
-        if (typeof chart.data === 'string') d3.csv(chart.data, function (d) {
-          return d;
-        }, function (data) {
-          chart.data = data;
-          chart.webcharts.init(data);
-        });else if (Array.isArray(chart.data)) chart.webcharts.init(chart.data);else console.warn('addChart() requires a path to a .csv file or a data array.');
+        setTitle.call(_this, chart);
+        callCreateControls.call(_this, chart);
+        enforceChartSizing.call(_this, chart);
+        callCreateChart.call(_this, chart);
+        attachCallbacks.call(_this, chart);
+        initializeChart.call(_this, chart);
       });
     }
 
@@ -546,7 +780,9 @@
         addChart: addChart,
         addChartList: addChartList,
         init: init,
-        clone: clone // avoid altering chart specifications
+        clone: clone,
+        // avoid altering chart specifications
+        stringAccessor: stringAccessor // update chart settings
 
       };
       layout.call(dashboardFramework);

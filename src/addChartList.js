@@ -7,6 +7,7 @@ export default function addChartList(charts) {
     charts.forEach(chart => {
         if (dashboardCharts !== undefined && chart.hasOwnProperty('identifier') && specifications[chart.identifier] !== undefined) {
             const specification = this.clone(specifications[chart.identifier]);
+            specification.identifier = chart.identifier;
             specification.data = chart.data;
             specification.title = specification.schema.title;
             if (chart.settings)

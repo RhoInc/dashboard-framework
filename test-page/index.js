@@ -5,7 +5,7 @@ dashboard.addChartList([
     {
         identifier: 'enrollment',
         data: '../../dashboard-charts/data/enrollment.csv',
-        callbacks: {onLayout: function() { console.log(this.raw_data); }},
+        callbacks: {onLayout: function() { this.raw_data = this.raw_data.concat(this.raw_data); }},
     },
     {
         identifier: 'visitCompletion',
@@ -30,7 +30,6 @@ dashboard.addChartList([
 
 //Add an additional chart.
 dashboard.addChart({
-    identifier: 'medicalSigns',
     settings: medicalSignsSettings, // settings
     data: '../../data-library/data/clinical-trials/renderer-specific/adbds.csv', // data path
     title: 'Lab Results',

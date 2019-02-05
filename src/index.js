@@ -1,5 +1,6 @@
 import './util/polyfills';
 import clone from './util/clone';
+import stringAccessor from './util/stringAccessor';
 
 /* Methods
     * dashboardFramework(element, settings)
@@ -28,6 +29,7 @@ export default function dashboardFramework(element = 'body', settings = {}) {
         addChartList,
         init,
         clone, // avoid altering chart specifications
+        stringAccessor, // update chart settings
     };
     layout.call(dashboardFramework);
     return dashboardFramework;
