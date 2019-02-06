@@ -5,10 +5,8 @@ export default function checkRequiredVariables(chart) {
     chart.variables = {
         actual: Object.keys(chart.data[0]),
         required: [],
-        missing: [],
+        missing: []
     };
-    if (chart.schema !== undefined)
-        withSchema.call(this, chart);
-    else
-        withoutSchema.call(this, chart);
+    if (chart.schema !== undefined) withSchema.call(this, chart);
+    else withoutSchema.call(this, chart);
 }

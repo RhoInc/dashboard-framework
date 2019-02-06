@@ -1,2 +1,1 @@
-export default function checkArguments() {
-}
+export default function checkArguments() {}

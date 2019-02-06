@@ -8,8 +8,8 @@ export default function withSchema(chart) {
             return property;
         })
         .filter(property => property['data-mapping'] === true);
-    chart.variables.required = chart.variables.schema
-        .filter(property => property.required === true);
-    chart.variables.missing = chart.variables.schema
-        .filter(variable => variable.missing);
+    chart.variables.required = chart.variables.schema.filter(
+        property => property.required === true
+    );
+    chart.variables.missing = chart.variables.schema.filter(variable => variable.missing);
 }

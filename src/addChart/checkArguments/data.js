@@ -8,7 +8,9 @@ export default function data(specification) {
 
     //data - valid type
     if (!(typeof specification.data === 'string' || Array.isArray(specification.data))) {
-        console.warn('[ data ] property of chart specification must be a path to a .csv file or an array.');
+        console.warn(
+            '[ data ] property of chart specification must be an array or a path to a .csv file.'
+        );
         specification.continue = false;
         return;
     }

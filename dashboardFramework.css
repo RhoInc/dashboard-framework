@@ -5,6 +5,9 @@
 .df-hidden {
     display: none !important;
 }
+.df-invisible {
+    visibility: hidden;
+}
 
 /*------------------------------------------------------------------------------------------------\
   Rows, columns, and chart containers
@@ -122,6 +125,7 @@
     }
     .df-chart__body .df-data-check__warning {
         margin-bottom: 5px;
+        margin-right: 5px;
         display: inline-block;
         color: green;
     }

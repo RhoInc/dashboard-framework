@@ -8,7 +8,7 @@ export default function withoutSchema(chart) {
         schema.push({
             key: 'x.column',
             title: 'X-axis',
-            current: chart.webcharts.config.x.column,
+            current: chart.webcharts.config.x.column
         });
 
     //y.column
@@ -16,7 +16,7 @@ export default function withoutSchema(chart) {
         schema.push({
             key: 'y.column',
             title: 'Y-axis',
-            current: chart.webcharts.config.y.column,
+            current: chart.webcharts.config.y.column
         });
 
     //color_by
@@ -24,20 +24,19 @@ export default function withoutSchema(chart) {
         schema.push({
             key: 'color_by',
             title: 'Color Stratification',
-            current: chart.webcharts.config.color_by,
+            current: chart.webcharts.config.color_by
         });
 
     //marks
     if (chart.webcharts.config.marks)
         chart.webcharts.config.marks.forEach((mark, i) => {
-
             //per
             if (mark.per && mark.per.length)
                 mark.per.forEach((variable, j) => {
                     schema.push({
                         key: 'marks[' + i + '].per[' + j + ']',
                         title: `Mark ${i} (${mark.type}), key ${j}`,
-                        current: variable,
+                        current: variable
                     });
                 });
 
@@ -55,7 +54,7 @@ export default function withoutSchema(chart) {
                     schema.push({
                         key: 'marks[' + i + "].values['" + value + "']",
                         title: `Mark ${i} (${mark.type}), ${value} subset`,
-                        current: value,
+                        current: value
                     });
             }
         });

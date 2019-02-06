@@ -4,34 +4,30 @@ const dashboard = dashboardFramework('#container');
 dashboard.addChartList([
     {
         identifier: 'enrollment',
-        data: '../../dashboard-charts/data/enrollment.csv',
-        callbacks: {onLayout: function() { this.raw_data = this.raw_data.concat(this.raw_data); }},
+        data: 'https://raw.githubusercontent.com/RhoInc/dashboard-charts/master/data/enrollment.csv',
     },
     {
         identifier: 'visitCompletion',
-        data: '../../dashboard-charts/data/visitCompletion.csv'
+        data: 'https://raw.githubusercontent.com/RhoInc/dashboard-charts/master/data/visitCompletion.csv'
     },
     {
         identifier: 'queries',
-        data: '../../dashboard-charts/data/queries.csv',
-        settings: {marks: [{summarizeY: 'count'}]},
+        data: 'https://raw.githubusercontent.com/RhoInc/dashboard-charts/master/data/queries.csv',
     },
     {
         identifier: 'enrollmentOverTime',
-        data: '../../dashboard-charts/data/enrollmentOverTime.csv',
-        controlInputs: [{type: 'subsetter', label: 'Population', value_col: 'population'}],
+        data: 'https://raw.githubusercontent.com/RhoInc/dashboard-charts/master/data/enrollmentOverTime.csv',
     },
     {
         identifier: 'forms',
-        data: '../../dashboard-charts/data/forms.csv',
-        settings: {marks: [{arrange: 'grouped'}]},
+        data: 'https://raw.githubusercontent.com/RhoInc/dashboard-charts/master/data/forms.csv',
     },
 ]);
 
 //Add an additional chart.
 dashboard.addChart({
     settings: medicalSignsSettings, // settings
-    data: '../../data-library/data/clinical-trials/renderer-specific/adbds.csv', // data path
+    data: 'https://raw.githubusercontent.com/RhoInc/data-library/master/data/clinical-trials/renderer-specific/adbds.csv', // data path
     title: 'Lab Results',
     controlInputs: [
         {

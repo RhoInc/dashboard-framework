@@ -12,11 +12,17 @@ export default function controlInputs(specification) {
     }
 
     //controlInputs - valid items
-    specification.controlInputs = specification.controlInputs
-        .filter((controlInput,i) => {
-            const isObject = typeof controlInput === 'object' && controlInput !== null && !Array.isArray(controlInput);
-            if (!isObject)
-                console.warn(`Items of [ controlInputs ] property must be objects. Removing \`${JSON.stringify(controlInput)}\`.`);
-            return isObject;
-        });
+    specification.controlInputs = specification.controlInputs.filter((controlInput, i) => {
+        const isObject =
+            typeof controlInput === 'object' &&
+            controlInput !== null &&
+            !Array.isArray(controlInput);
+        if (!isObject)
+            console.warn(
+                `Items of [ controlInputs ] property must be objects. Removing \`${JSON.stringify(
+                    controlInput
+                )}\`.`
+            );
+        return isObject;
+    });
 }

@@ -14,18 +14,28 @@ export default function callbacks(specification) {
     //callbacks - valid properties
     specification.callbacks = Object.keys(specification.callbacks)
         .filter(key => {
-            const validProperties = ['onInit', 'onLayout', 'onPreprocess', 'onDatatransform', 'onDraw', 'onResize', 'onDestroy'];
+            const validProperties = [
+                'onInit',
+                'onLayout',
+                'onPreprocess',
+                'onDatatransform',
+                'onDraw',
+                'onResize',
+                'onDestroy'
+            ];
             const validProperty = validProperties.indexOf(key) > -1;
             if (!validProperty)
-                console.warn(`Valid [ callbacks ] include ${validProperties.toString().replace(/,/g, ', ').replace('onDestroy', 'and onDestroy')}. Removing \`${key}\`.`);
+                console.warn(
+                    `Valid [ callbacks ] include ${validProperties
+                        .toString()
+                        .replace(/,/g, ', ')
+                        .replace('onDestroy', 'and onDestroy')}. Removing \`${key}\`.`
+                );
             return validProperty;
         })
-        .reduce(
-            (acc,cur) => {
-                acc[cur] = specification.callbacks[cur];
+        .reduce((acc, cur) => {
+            acc[cur] = specification.callbacks[cur];
 
-                return acc;
-            },
-            {}
-        );
+            return acc;
+        }, {});
 }
