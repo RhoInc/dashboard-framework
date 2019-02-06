@@ -123,6 +123,10 @@
     .df-chart__body .df-data-check__warning {
         margin-bottom: 5px;
         display: inline-block;
+        color: green;
+    }
+    .df-chart__body .df-data-check__warning--missing {
+        color: red;
     }
     .df-chart__body .df-data-check__variable-select {
         width: 96%;

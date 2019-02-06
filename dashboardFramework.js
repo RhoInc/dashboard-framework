@@ -545,6 +545,7 @@
     }
 
     function callCreateChart(chart) {
+      console.log(chart.controls);
       chart.webcharts = new webcharts.createChart(chart.containers.body.node(), chart.settings, chart.controls);
     }
 
@@ -646,58 +647,49 @@
     }
 
     function addWarning(chart) {
-      chart.containers.warning = chart.containers.dataCheck.append('strong').classed('df-data-check__warning', true).text("".concat(chart.variables.missing.length, " variable").concat(chart.variables.missing.length === 1 ? '' : 's', " missing:"));
+      chart.containers.warning = chart.containers.dataCheck.append('strong').classed('df-data-check__warning', true);
     }
 
     function addSchema(chart) {
-      var context = this;
-      chart.containers.schema = chart.containers.dataCheck.selectAll('div.df-data-check__variable-select').data(chart.variables.schema).enter().append('div').classed('df-data-check__variable-select', true).classed('df-data-check__variable-select--missing', function (d) {
-        return chart.variables.missing.map(function (variable) {
-          return variable.key;
-        }).indexOf(d.key) > -1;
-      }).each(function (d) {
-        var variableSelect = d3.select(this);
-        variableSelect.append('div').classed('df-data-check__variable-select__title', true).html("".concat(d.title).concat(d.required ? ' (<strong>required</strong>)' : ''));
-        variableSelect.append('div').classed('df-data-check__variable-select__action', true).html("Choose another variable:");
-        variableSelect.append('div').classed('df-data-check__variable-select__current', true).html("Currently: <em>".concat(d.current, "<em>"));
-        if (d.missing) chart.settings[d.key] = null;
-        var dropdown = variableSelect.append('select').classed('df-data-check__variable-select__dropdown', true);
-        dropdown.selectAll('option').data(['None selected'].concat(chart.variables.actual)).enter().append('option').text(function (di) {
-          return di;
-        }).property('selected', function (di) {
-          return d.current === di;
-        });
-        dropdown.on('change', function (dii) {
-          var option = dropdown.selectAll('option:checked').text();
-
-          if (option !== 'None selected') {
-            variableSelect.classed('df-data-check__variable-select--missing', false);
-            chart.variables.schema.find(function (variable) {
-              return variable.key === d.key;
-            }).missing = false;
-
-            if (chart.configuration) {
-              chart.settings[d.key] = option;
-              chart.settings = chart.configuration.syncSettings(chart.settings);
-            } else {
-              console.log(d.key);
-              context.stringAccessor(chart.settings, d.key, option);
-            }
-
-            chart.webcharts.config = chart.settings;
-          } else {
-            variableSelect.classed('df-data-check__variable-select--missing', true);
-          }
-
-          if (chart.variables.schema.every(function (variable) {
-            return !(variable.required && variable.missing);
-          })) chart.containers.submit.property('disabled', false);
-        });
+      chart.containers.schemaContainers = chart.containers.dataCheck.selectAll('div.df-data-check__variable-select').data(chart.variables.schema).enter().append('div').classed('df-data-check__variable-select', true);
+      chart.containers.schemaTitles = chart.containers.schemaContainers.append('div').classed('df-data-check__variable-select__title', true).html(function (d) {
+        return "".concat(d.title).concat(d.required ? ' (<strong>required</strong>)' : '');
+      });
+      chart.containers.schemaMessages = chart.containers.schemaContainers.append('div').classed('df-data-check__variable-select__action', true).html(function (d) {
+        return "Choose another variable:";
+      });
+      chart.containers.schemaSettings = chart.containers.schemaContainers.append('div').classed('df-data-check__variable-select__current', true).html(function (d) {
+        return "Currently: <em>".concat(d.current, "<em>");
+      });
+      chart.containers.schemaDropdowns = chart.containers.schemaContainers.append('select').classed('df-data-check__variable-select__dropdown', true);
+      chart.containers.schemaOptions = chart.containers.schemaDropdowns.selectAll('option').data(['None selected'].concat(chart.variables.actual)).enter().append('option').text(function (di) {
+        return di;
       });
     }
 
     function addSubmit(chart) {
-      chart.containers.submit = chart.containers.dataCheck.append('button').classed('df-data-check__submit', true).text('View chart').property('disabled', true).on('click', function () {
+      chart.containers.submit = chart.containers.dataCheck.append('button').classed('df-data-check__submit', true).text('View chart');
+    }
+
+    function layout$1(chart) {
+      addContainer.call(this, chart);
+      addWarning.call(this, chart);
+      addSchema.call(this, chart);
+      addSubmit.call(this, chart);
+    }
+
+    function updateWarning(chart) {
+      var missingRequiredVariables = chart.variables.schema.filter(function (variable) {
+        return variable.required && variable.missing;
+      });
+      chart.containers.warning.classed('df-data-check__warning--missing', missingRequiredVariables.length > 0).text(missingRequiredVariables.length > 0 ? "".concat(missingRequiredVariables.length, " required variable").concat(missingRequiredVariables.length === 1 ? '' : 's', " missing:") : "All required variables present.");
+    }
+
+    function updateSubmit(chart) {
+      var missingRequiredVariables = chart.variables.schema.filter(function (variable) {
+        return variable.required && variable.missing;
+      });
+      chart.containers.submit.property('disabled', missingRequiredVariables.length > 0).on('click', function () {
         if (!chart.initialized) {
           chart.webcharts.init(chart.data);
           chart.initialized = true;
@@ -710,15 +702,64 @@
       });
     }
 
-    function layout$1(chart) {
-      addContainer.call(this, chart);
-      addWarning.call(this, chart);
-      addSchema.call(this, chart);
-      addSubmit.call(this, chart);
+    function updateSchema(chart) {
+      var context = this;
+      chart.containers.schemaContainers.classed('df-data-check__variable-select--missing', function (d) {
+        return chart.variables.missing.map(function (variable) {
+          return variable.key;
+        }).indexOf(d.key) > -1;
+      });
+      chart.containers.schemaOptions.property('selected', function (d) {
+        var dropdown = d3.select(this.parentNode);
+        return dropdown.datum().current === d;
+      });
+      chart.containers.schemaDropdowns.on('change', function (d) {
+        var schemaContainer = d3.select(this.parentNode);
+        var dropdown = d3.select(this);
+        var option = dropdown.selectAll('option:checked').text();
+
+        if (option !== 'None selected') {
+          schemaContainer.classed('df-data-check__variable-select--missing', false);
+          var variableSchema = chart.variables.schema.find(function (variable) {
+            return variable.key === d.key;
+          });
+          variableSchema.current = option;
+          variableSchema.missing = false;
+          updateWarning.call(context, chart);
+
+          if (chart.configuration) {
+            chart.settings[d.key] = option;
+            chart.settings = chart.configuration.syncSettings(chart.settings);
+          } else {
+            context.stringAccessor(chart.settings, d.key, option);
+          }
+
+          chart.webcharts.config = chart.settings;
+        } else {
+          schemaContainer.classed('df-data-check__variable-select--missing', true);
+
+          var _variableSchema = chart.variables.schema.find(function (variable) {
+            return variable.key === d.key;
+          });
+
+          _variableSchema.current = null;
+          _variableSchema.missing = true;
+          updateWarning.call(context, chart);
+        }
+
+        updateSubmit.call(context, chart);
+      });
+    }
+
+    function update(chart) {
+      updateWarning.call(this, chart);
+      updateSchema.call(this, chart);
+      updateSubmit.call(this, chart);
     }
 
     function addVariableSelect(chart) {
       layout$1.call(this, chart);
+      update.call(this, chart);
     }
 
     function initializeChart(chart) {
