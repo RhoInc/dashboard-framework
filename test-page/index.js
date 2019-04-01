@@ -8,7 +8,7 @@ dashboard.addChartList([
     },
     {
         identifier: 'visitCompletion',
-        data: 'https://raw.githubusercontent.com/RhoInc/data-library/master/data/clinical-trials/data-cleaning/dashboard-visitcompletion.csv'
+        data: 'https://raw.githubusercontent.com/RhoInc/data-library/master/data/clinical-trials/data-cleaning/dashboard-visit-completion.csv'
     },
     {
         identifier: 'queries',
@@ -16,7 +16,7 @@ dashboard.addChartList([
     },
     {
         identifier: 'enrollmentOverTime',
-        data: 'https://raw.githubusercontent.com/RhoInc/data-library/master/data/clinical-trials/data-cleaning/dashboard-enrollmentovertime.csv',
+        data: 'https://raw.githubusercontent.com/RhoInc/data-library/master/data/clinical-trials/data-cleaning/dashboard-enrollment-over-time.csv',
     },
     {
         identifier: 'forms',
