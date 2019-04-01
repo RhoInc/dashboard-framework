@@ -4,23 +4,23 @@ const dashboard = dashboardFramework('#container');
 dashboard.addChartList([
     {
         identifier: 'enrollment',
-        data: 'https://raw.githubusercontent.com/RhoInc/dashboard-charts/master/data/enrollment.csv',
+        data: 'https://raw.githubusercontent.com/RhoInc/data-library/master/data/clinical-trials/data-cleaning/dashboard-enrollment.csv',
     },
     {
         identifier: 'visitCompletion',
-        data: 'https://raw.githubusercontent.com/RhoInc/dashboard-charts/master/data/visitCompletion.csv'
+        data: 'https://raw.githubusercontent.com/RhoInc/data-library/master/data/clinical-trials/data-cleaning/dashboard-visit-completion.csv'
     },
     {
         identifier: 'queries',
-        data: 'https://raw.githubusercontent.com/RhoInc/dashboard-charts/master/data/queries.csv',
+        data: 'https://raw.githubusercontent.com/RhoInc/data-library/master/data/clinical-trials/data-cleaning/dashboard-queries.csv',
     },
     {
         identifier: 'enrollmentOverTime',
-        data: 'https://raw.githubusercontent.com/RhoInc/dashboard-charts/master/data/enrollmentOverTime.csv',
+        data: 'https://raw.githubusercontent.com/RhoInc/data-library/master/data/clinical-trials/data-cleaning/dashboard-enrollment-over-time.csv',
     },
     {
         identifier: 'forms',
-        data: 'https://raw.githubusercontent.com/RhoInc/dashboard-charts/master/data/forms.csv',
+        data: 'https://raw.githubusercontent.com/RhoInc/data-library/master/data/clinical-trials/data-cleaning/dashboard-forms.csv',
     },
 ]);
 
