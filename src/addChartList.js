@@ -13,7 +13,7 @@ export default function addChartList(charts) {
             const specification = this.clone(specifications[chart.identifier]);
             specification.identifier = chart.identifier;
             specification.data = chart.data;
-            specification.title = specification.schema.title;
+            specification.title = chart.title || specification.schema.title;
             if (chart.settings)
                 specification.settings = deepmerge(specification.settings, chart.settings);
             if (chart.controlInputs) specification.controlInputs = chart.controlInputs;

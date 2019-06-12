@@ -1,6 +1,6 @@
 {
   "name": "dashboard-framework",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "webpage framework in which to place charts in a grid",
   "module": "src/index.js",
   "main": "dashboardFramework.js",

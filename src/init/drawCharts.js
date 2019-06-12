@@ -7,6 +7,7 @@ import initializeChart from './drawcharts/initializeChart';
 
 export default function drawCharts() {
     this.charts.forEach(chart => {
+        console.log(chart);
         setTitle.call(this, chart);
         callCreateControls.call(this, chart);
         enforceSizing.call(this, chart);
