@@ -1,3 +1,4 @@
+import { select } from 'd3';
 import updateWarning from './updateWarning';
 import updateSubmit from './updateSubmit';
 
@@ -9,12 +10,12 @@ export default function updateSchema(chart) {
         d => chart.variables.missing.map(variable => variable.key).indexOf(d.key) > -1
     );
     chart.containers.schemaOptions.property('selected', function(d) {
-        const dropdown = d3.select(this.parentNode);
+        const dropdown = select(this.parentNode);
         return dropdown.datum().current === d;
     });
     chart.containers.schemaDropdowns.on('change', function(d) {
-        const schemaContainer = d3.select(this.parentNode);
-        const dropdown = d3.select(this);
+        const schemaContainer = select(this.parentNode);
+        const dropdown = select(this);
         const option = dropdown.selectAll('option:checked').text();
 
         //user selects variable

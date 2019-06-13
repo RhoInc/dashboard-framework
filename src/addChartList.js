@@ -6,7 +6,8 @@ export default function addChartList(charts) {
     checkArguments.call(this, charts);
     charts.forEach(chart => {
         if (
-            dashboardCharts !== undefined &&
+            window &&
+            window.dashboardCharts !== undefined &&
             chart.hasOwnProperty('identifier') &&
             specifications[chart.identifier] !== undefined
         ) {
@@ -15,11 +16,14 @@ export default function addChartList(charts) {
             specification.data = chart.data;
             specification.title = chart.title || specification.schema.title;
             if (chart.settings)
-                specification.settings = deepmerge(specification.settings, chart.settings);
+                specification.settings = deepmerge(specification.settings, chart.settings, {
+                    arrayMerge: (target, source) => [...source]
+                });
             if (chart.controlInputs) specification.controlInputs = chart.controlInputs;
             if (chart.callbacks)
                 for (const callback in chart.callbacks)
                     specification.callbacks[callback] = chart.callbacks[callback];
+            if (chart.data_callback) specification.data_callback = chart.data_callback;
             this.addChart(specification);
         } else this.addChart(chart.specification);
     });

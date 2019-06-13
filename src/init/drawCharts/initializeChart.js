@@ -11,6 +11,7 @@ export default function initializeChart(chart) {
                 return d;
             },
             data => {
+                if (chart.data_callback) chart.data_callback(data);
                 chart.data = data;
                 checkRequiredVariables.call(this, chart);
                 addVariableSelect.call(this, chart);
@@ -26,6 +27,7 @@ export default function initializeChart(chart) {
             }
         );
     } else if (Array.isArray(chart.data)) {
+        if (chart.data_callback) chart.data_callback(data);
         checkRequiredVariables.call(this, chart);
         addVariableSelect.call(this, chart);
 

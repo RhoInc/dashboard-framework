@@ -13,7 +13,7 @@
               global.dashboardCharts,
               global.webCharts
           )));
-})(this, function(d3$1, dashboardCharts$1, webcharts) {
+})(this, function(d3, dashboardCharts, webcharts) {
     'use strict';
 
     if (typeof Object.assign != 'function') {
@@ -144,6 +144,30 @@
         return _typeof(obj);
     }
 
+    function _toConsumableArray(arr) {
+        return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
+    }
+
+    function _arrayWithoutHoles(arr) {
+        if (Array.isArray(arr)) {
+            for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+            return arr2;
+        }
+    }
+
+    function _iterableToArray(iter) {
+        if (
+            Symbol.iterator in Object(iter) ||
+            Object.prototype.toString.call(iter) === '[object Arguments]'
+        )
+            return Array.from(iter);
+    }
+
+    function _nonIterableSpread() {
+        throw new TypeError('Invalid attempt to spread non-iterable instance');
+    }
+
     function clone(obj) {
         var copy; //boolean, number, string, null, undefined
 
@@ -200,14 +224,14 @@
 
     function layout() {
         this.containers = {
-            main: d3$1
+            main: d3
                 .select(this.element)
                 .append('div')
                 .datum(this)
                 .classed('dashboard-framework', true)
                 .attr(
                     'id',
-                    'dashboard-framework'.concat(d3$1.selectAll('.dashboard-framework').size() + 1)
+                    'dashboard-framework'.concat(d3.selectAll('.dashboard-framework').size() + 1)
                 )
         };
     }
@@ -498,22 +522,28 @@
         checkArguments$1.call(this, charts);
         charts.forEach(function(chart) {
             if (
-                dashboardCharts !== undefined &&
+                window &&
+                window.dashboardCharts !== undefined &&
                 chart.hasOwnProperty('identifier') &&
-                dashboardCharts$1.specifications[chart.identifier] !== undefined
+                dashboardCharts.specifications[chart.identifier] !== undefined
             ) {
-                var specification = _this.clone(dashboardCharts$1.specifications[chart.identifier]);
+                var specification = _this.clone(dashboardCharts.specifications[chart.identifier]);
 
                 specification.identifier = chart.identifier;
                 specification.data = chart.data;
                 specification.title = chart.title || specification.schema.title;
                 if (chart.settings)
-                    specification.settings = deepmerge(specification.settings, chart.settings);
+                    specification.settings = deepmerge(specification.settings, chart.settings, {
+                        arrayMerge: function arrayMerge(target, source) {
+                            return _toConsumableArray(source);
+                        }
+                    });
                 if (chart.controlInputs) specification.controlInputs = chart.controlInputs;
                 if (chart.callbacks)
                     for (var callback in chart.callbacks) {
                         specification.callbacks[callback] = chart.callbacks[callback];
                     }
+                if (chart.data_callback) specification.data_callback = chart.data_callback;
 
                 _this.addChart(specification);
             } else _this.addChart(chart.specification);
@@ -986,12 +1016,13 @@
 
         //Intialize chart.
         if (typeof chart.data === 'string') {
-            d3$1.csv(
+            d3.csv(
                 chart.data,
                 function(d) {
                     return d;
                 },
                 function(data) {
+                    if (chart.data_callback) chart.data_callback(data);
                     chart.data = data;
                     checkRequiredVariables.call(_this, chart);
                     addVariableSelect.call(_this, chart);
@@ -1008,6 +1039,7 @@
                 }
             );
         } else if (Array.isArray(chart.data)) {
+            if (chart.data_callback) chart.data_callback(data);
             checkRequiredVariables.call(this, chart);
             addVariableSelect.call(this, chart);
 
@@ -1027,7 +1059,6 @@
         var _this = this;
 
         this.charts.forEach(function(chart) {
-            console.log(chart);
             setTitle.call(_this, chart);
             callCreateControls.call(_this, chart);
             enforceChartSizing.call(_this, chart);
