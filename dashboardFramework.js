@@ -527,26 +527,48 @@
                 chart.hasOwnProperty('identifier') &&
                 dashboardCharts.specifications[chart.identifier] !== undefined
             ) {
-                var specification = _this.clone(dashboardCharts.specifications[chart.identifier]);
+                //Capture and clone default chart specification given specification identifier specified in chart settings.
+                var specification = _this.clone(dashboardCharts.specifications[chart.identifier]); //Attach specification identifier to specification -- seems recursive.
 
-                specification.identifier = chart.identifier;
-                specification.data = chart.data;
-                specification.title = chart.title || specification.schema.title;
+                specification.identifier = chart.identifier; //Attach chart data to specification.
+
+                specification.data = chart.data; //Overwrite specification title with custom chart title.
+
+                specification.title = chart.title || specification.schema.title; //Add a data callback that is called before the chart is initialized.
+
+                if (chart.data_callback) specification.data_callback = chart.data_callback; //Merge default settings with custom settings.
+
                 if (chart.settings)
                     specification.settings = deepmerge(specification.settings, chart.settings, {
                         arrayMerge: function arrayMerge(target, source) {
                             return _toConsumableArray(source);
                         }
-                    });
-                if (chart.controlInputs) specification.controlInputs = chart.controlInputs;
-                if (chart.callbacks)
+                    }); //Overwrite default controls with custom controls.
+
+                if (chart.controlInputs) specification.controlInputs = chart.controlInputs; //Couple custom callbacks with default callbacks.
+
+                if (chart.callbacks) {
+                    var _loop = function _loop(callback) {
+                        var defaultCallback = specification.callbacks[callback];
+                        var customCallback = chart.callbacks[callback];
+
+                        specification.callbacks[callback] = function() {
+                            if (defaultCallback) defaultCallback.call(this); // run default callback defined in specification
+
+                            if (customCallback) customCallback.call(this); // run custom callback defined by user
+                        };
+                    };
+
                     for (var callback in chart.callbacks) {
-                        specification.callbacks[callback] = chart.callbacks[callback];
+                        _loop(callback);
                     }
-                if (chart.data_callback) specification.data_callback = chart.data_callback;
+                } //Add chart to dashboard framework.
 
                 _this.addChart(specification);
-            } else _this.addChart(chart.specification);
+            } else {
+                //Add chart to dashboard framework.
+                _this.addChart(chart.specification);
+            }
         });
     }
 
