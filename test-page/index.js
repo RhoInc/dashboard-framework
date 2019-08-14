@@ -3,8 +3,8 @@ const dashboard = dashboardFramework('#container');
 //Pass an array of data specification identifiers and data paths/arrays.
 dashboard.addChartList([
     {
-        identifier: 'enrollment',
-        data: 'https://raw.githubusercontent.com/RhoInc/data-library/master/data/clinical-trials/data-cleaning/dashboard-enrollment.csv',
+        identifier: 'accrual',
+        data: 'https://raw.githubusercontent.com/RhoInc/data-library/master/data/clinical-trials/data-cleaning/dashboard-accrual.csv',
     },
     {
         identifier: 'visitCompletion',
@@ -15,8 +15,8 @@ dashboard.addChartList([
         data: 'https://raw.githubusercontent.com/RhoInc/data-library/master/data/clinical-trials/data-cleaning/dashboard-queries.csv',
     },
     {
-        identifier: 'enrollmentOverTime',
-        data: 'https://raw.githubusercontent.com/RhoInc/data-library/master/data/clinical-trials/data-cleaning/dashboard-enrollment-over-time.csv',
+        identifier: 'accrualOverTime',
+        data: 'https://raw.githubusercontent.com/RhoInc/data-library/master/data/clinical-trials/data-cleaning/dashboard-accrual-over-time.csv',
     },
     {
         identifier: 'forms',

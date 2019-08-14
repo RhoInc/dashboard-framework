@@ -660,10 +660,9 @@
     }
 
     function callCreateControls(chart) {
-        if (Array.isArray(chart.controlInputs) && chart.controlInputs.length)
-            chart.controls = new webcharts.createControls(chart.containers.head.node(), {
-                inputs: chart.controlInputs
-            });
+        chart.controls = new webcharts.createControls(chart.containers.head.node(), {
+            inputs: chart.controlInputs || []
+        });
     }
 
     function enforceChartSizing(chart) {
@@ -906,10 +905,9 @@
     }
 
     function callCreateControls$1(chart) {
-        if (Array.isArray(chart.controlInputs) && chart.controlInputs.length)
-            chart.controls = new webcharts.createControls(chart.containers.head.node(), {
-                inputs: chart.controlInputs
-            });
+        chart.controls = new webcharts.createControls(chart.containers.head.node(), {
+            inputs: chart.controlInputs || []
+        });
     }
 
     function enforceChartSizing$1(chart) {
