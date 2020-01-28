@@ -524,13 +524,13 @@
             if (
                 window &&
                 window.dashboardCharts !== undefined &&
-                chart.hasOwnProperty('identifier') &&
-                dashboardCharts.specifications[chart.identifier] !== undefined
+                chart.hasOwnProperty('spec') &&
+                dashboardCharts.specifications[chart.spec] !== undefined
             ) {
                 //Capture and clone default chart specification given specification identifier specified in chart settings.
-                var specification = _this.clone(dashboardCharts.specifications[chart.identifier]); //Attach specification identifier to specification -- seems recursive.
+                var specification = _this.clone(dashboardCharts.specifications[chart.spec]); //Attach specification identifier to specification -- seems recursive.
 
-                specification.identifier = chart.identifier; //Attach chart data to specification.
+                specification.spec = chart.spec; //Attach chart data to specification.
 
                 specification.data = chart.data; //Overwrite specification title with custom chart title.
 
