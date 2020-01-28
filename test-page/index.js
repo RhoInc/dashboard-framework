@@ -1,30 +1,30 @@
 const dashboard = dashboardFramework('#container');
 
-//Pass an array of data specification identifiers and data paths/arrays.
+// Pass an array of data specification identifiers and data paths/arrays.
 dashboard.addChartList([
     {
-        identifier: 'accrual',
+        spec: 'accrual',
         data: 'https://raw.githubusercontent.com/RhoInc/data-library/master/data/clinical-trials/data-cleaning/dashboard-accrual.csv',
     },
     {
-        identifier: 'visitCompletion',
+        spec: 'visitCompletion',
         data: 'https://raw.githubusercontent.com/RhoInc/data-library/master/data/clinical-trials/data-cleaning/dashboard-visit-completion.csv'
     },
     {
-        identifier: 'queries',
+        spec: 'queries',
         data: 'https://raw.githubusercontent.com/RhoInc/data-library/master/data/clinical-trials/data-cleaning/dashboard-queries.csv',
     },
     {
-        identifier: 'accrualOverTime',
+        spec: 'accrualOverTime',
         data: 'https://raw.githubusercontent.com/RhoInc/data-library/master/data/clinical-trials/data-cleaning/dashboard-accrual-over-time.csv',
     },
     {
-        identifier: 'forms',
+        spec: 'forms',
         data: 'https://raw.githubusercontent.com/RhoInc/data-library/master/data/clinical-trials/data-cleaning/dashboard-forms.csv',
     },
 ]);
 
-//Add an additional chart.
+// Add an additional chart.
 dashboard.addChart({
     settings: medicalSignsSettings, // settings
     data: 'https://raw.githubusercontent.com/RhoInc/data-library/master/data/clinical-trials/renderer-specific/adbds.csv', // data path
@@ -55,5 +55,5 @@ dashboard.addChart({
     }, // callbacks
 });
 
-//Initialize dashboard.
+// Initialize dashboard.
 dashboard.init();

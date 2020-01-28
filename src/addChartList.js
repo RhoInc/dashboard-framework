@@ -8,14 +8,14 @@ export default function addChartList(charts) {
         if (
             window &&
             window.dashboardCharts !== undefined &&
-            chart.hasOwnProperty('identifier') &&
-            specifications[chart.identifier] !== undefined
+            chart.hasOwnProperty('spec') &&
+            specifications[chart.spec] !== undefined
         ) {
             //Capture and clone default chart specification given specification identifier specified in chart settings.
-            const specification = this.clone(specifications[chart.identifier]);
+            const specification = this.clone(specifications[chart.spec]);
 
             //Attach specification identifier to specification -- seems recursive.
-            specification.identifier = chart.identifier;
+            specification.spec = chart.spec;
 
             //Attach chart data to specification.
             specification.data = chart.data;
