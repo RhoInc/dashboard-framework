@@ -1069,7 +1069,7 @@
                 }).length === 0
             ) {
                 chart.containers.dataCheck.classed('df-hidden', true);
-                chart.webcharts.init(data);
+                chart.webcharts.init(chart.data);
                 chart.initialized = true;
             }
         } else console.warn('addChart() requires a path to a .csv file or a data array.');
